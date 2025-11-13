@@ -35,7 +35,7 @@
 1. **FixedUpdate()**
    - 触发Dodge()，因为sliding为true所以不修改boost的值
 
-2. **FixedUpdate间隔里中间的多帧**
+2. **两次FixedUpdate的执行间隔里的多帧**
    - InputSystem检测1 : 检测到松开了slide键
    - Update()循环1 : 由于松开了slide键执行了StopSlide()，将sliding设置为false
    - InputSystem检测2 : 检测到按下了跳跃键
