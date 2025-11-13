@@ -17,19 +17,19 @@
 根据视频与Unity官方文档，当前的输入与帧循环情况如下：
 
 1. **FixedUpdate()**
-   - 大约运行在 **125 FPS** 左右。
-   - 用于物理计算，时间间隔固定。
+   - 大约运行在 **125 FPS** 左右
+   - 时间间隔固定
    - (事实上这个东西才是我最不太确定的，不过哪怕具体运行帧率有误差只要不是那种一秒运行240次以上就无所谓)
 
 2. **Update()**
-   - 每帧执行一次。
-   - 用于处理游戏逻辑、动画、输入读取等。
+   - 每帧执行一次
+   - 用于处理游戏逻辑、动画、输入读取等
 
 3. **InputSystem**
    - **UpdateMode**: `ProcessEventsInDynamicUpdate`
-   - 每帧执行一次，在 **Update() 之前**处理输入事件。
-   - 官方文档说明：  
-     [Event function execution order](https://docs.unity3d.com/Manual/execution-order.html)
+   - 每帧执行一次，在 **Update() 之前**处理输入事件
+
+官方文档说明: [Event function execution order](https://docs.unity3d.com/Manual/execution-order.html)
 
 #### 假说：
 1. **FixedUpdate()**
