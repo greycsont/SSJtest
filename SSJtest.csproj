@@ -18,7 +18,7 @@
 
   <ItemGroup>
     <Reference Include="Assembly-CSharp_publicized">
-      <HintPath>Lib\Assembly-CSharp_publicized.dll</HintPath>
+      <HintPath>lib\Assembly-CSharp_publicized.dll</HintPath>
       <Private>false</Private>
     </Reference>
 
