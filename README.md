@@ -5,6 +5,13 @@
 
 大概知道了，update太超模了运行多次没fixedupdate用dodge清理boost值，然后inputSystem检测到跳就直接爆了
 
+### 项目本身
+一些patch用于检测，但神秘扣体力跳还是要你自己搓
+
+左轮的左键会输出当前InputSystem的UpdateMode
+
+记得去BepInEx.cfg里把logging.console的Enabled设置为true，不然你拿什么看输出呢
+
 ### 大纲：
 #### 三条时间线：
 根据视频与Unity官方文档，当前的输入与帧循环情况如下：
