@@ -6,9 +6,7 @@
 大概知道了，update太超模了运行多次没fixedupdate用dodge清理boost值，然后inputSystem检测到跳就直接爆了
 
 ### 项目本身
-一些patch用于检测，但神秘扣体力跳还是要你自己搓
-
-左轮的左键会输出当前InputSystem的UpdateMode
+一些patch用于检测，一些patch用于debug，但神秘扣体力跳还是要你自己搓
 
 记得去BepInEx.cfg里把logging.console的Enabled设置为true，不然你拿什么看输出呢
 
@@ -26,21 +24,31 @@
    - 用于处理游戏逻辑、动画、输入读取等
 
 3. **InputSystem**
-   - **UpdateMode**: `ProcessEventsInDynamicUpdate`
-   - 每帧执行一次，在 **Update() 之前**处理输入事件
+   - ULTRAKILL的UpdateMode: `ProcessEventsInDynamicUpdate`
+   - DynamicUpdate是每帧执行一次，在 **Update() 之前**处理输入事件
 
-官方文档说明: [Event function execution order](https://docs.unity3d.com/Manual/execution-order.html)
+官方文档说明: 
+- [Event function execution order](https://docs.unity3d.com/Manual/execution-order.html)
+- [Input System Update Mode](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.16/api/UnityEngine.InputSystem.InputSettings.UpdateMode.html#:~:text=In%20this%20mode%2C%20Update%20%28%29%20must%20be%20called,in%20the%20frame%20explicitly%20at%20an%20exact%20location.)
 
+此操作唯二可以修改boost变量为false的地方：
+- Jump()的最后面
+- Dodge()的后面
+其中 Dodge()只在FixedUpdate()里调用
 #### 假说：
-1. **FixedUpdate()**
-   - 触发Dodge()，因为sliding为true所以不修改boost的值
+**FixedUpdate()**
+- 触发Dodge()，由于sliding为true所以不修改boost的值
 
-2. **两次FixedUpdate的执行间隔里的多帧**
-   - InputSystem检测1 : 检测到松开了slide键
-   - Update()循环1 : 由于松开了slide键执行了StopSlide()，将sliding设置为false
-   - InputSystem检测2 : 检测到按下了跳跃键
-   - Update()循环2 ：执行了Jump()，由于boost为true触发了冲刺音效和扣体力值
+**两次FixedUpdate的执行间隔里的多帧**
+frame 1:
+    - InputSystem : 检测到松开了slide键
+    - Update() : 由于松开了slide键执行了StopSlide()，将sliding设置为false
 
+frame 2:
+    - InputSystem : 检测到按下了跳跃键
+    - Update() ：执行了Jump()，由于boost为true触发了冲刺音效和扣体力值
+
+由于SSJ要求boost为false所以触发不了SSJ
 <br><br><br>
 
 <img src="./docs/branch_cancelSlideInput.png"/>

@@ -72,6 +72,25 @@ public static class Revolver_Shoot_Patch
     }
 }
 
+[HarmonyPatch(typeof(Nailgun), nameof(Nailgun.Shoot))]
+public static class Nailgun_Shoot_Patch
+{
+    static void Prefix()
+    {
+        Plugin.Logger.LogInfo("Boost value: " + NewMovement.instance.boost);
+    }
+}
+
+[HarmonyPatch(typeof(RocketLauncher), nameof(RocketLauncher.Shoot))]
+public static class RocketLauncher_Shoot_Patch
+{
+    static void Prefix()
+    {
+        NewMovement.instance.boost = !NewMovement.instance.boost;
+        Plugin.Logger.LogInfo("Toggled Boost value to: " + NewMovement.instance.boost);
+    }
+}
+
 public static class Utils
 {
     public static string GetCallStack()
