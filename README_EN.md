@@ -1,0 +1,3 @@
+Normally, the NewMovement.boost may set to false by the **Dodge()** in FixedUpdate(), but the interval between two Fixedupdate is 8ms (it can be checked by Time.fixedDeltaTime).
+
+The inputSystem's update mode is *ProcessEventsInDynamicUpdate*, which is run input updates right before every Update(), and the checking of **Release slide to StopSliding()** and **Press jump to Jump()** is run in the NewMovement.Update(), if the framerate is too high, it may stopslide and jump between two fixedupdate, the sliding's value are set to false by the stopslide() and boost's value are true due to the interval, the jump will go though the dashjump branches and consume stamina and trigger sfx.

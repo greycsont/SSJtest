@@ -8,25 +8,6 @@ using UnityEngine.InputSystem.LowLevel;
 
 namespace SSJtest;
 
-/*[HarmonyPatch(typeof(NewMovement), nameof(NewMovement.TrySSJ))]
-public static class TrySSJ_Patch
-{
-    static void Prefix(NewMovement __instance)
-    {
-        // 输出简单调用栈到控制台
-        Plugin.Logger.LogInfo("NewMovement.TrySSJ called! Call stack:");
-        // 获取当前调用栈
-        StackTrace trace = new StackTrace();
-        string methodNames = "at ";
-        foreach (var frame in trace.GetFrames())
-        {
-            var method = frame.GetMethod();
-            methodNames += ($"{method.DeclaringType.FullName}.{method.Name} <- ");
-        }
-        Plugin.Logger.LogInfo(methodNames);
-        Plugin.Logger.LogInfo($"SSJ state: {__instance.framesSinceSlide > 0 && (float)__instance.framesSinceSlide < __instance.ssjMaxFrames && !__instance.boost}");
-    }
-}*/
 
 [HarmonyPatch(typeof(NewMovement), nameof(NewMovement.Jump))]
 public static class Jump_Patch
@@ -41,15 +22,6 @@ public static class Jump_Patch
     }
 }
 
-[HarmonyPatch(typeof(NewMovement), nameof(NewMovement.StopSlide))]
-public static class StopSlide_Patch
-{
-    static void Prefix(NewMovement __instance)
-    {
-        Plugin.Logger.LogInfo($"StopSlide called");
-    }
-}
-
 [HarmonyPatch(typeof(NewMovement), nameof(NewMovement.Dodge))]
 public static class Dodge_Patch
 {
@@ -58,6 +30,7 @@ public static class Dodge_Patch
         if(!__instance.sliding)
         {
             Plugin.Logger.LogInfo($"set boost to false in Dodge()");
+            Plugin.Logger.LogInfo("Call Stack: " + Utils.GetCallStack());
         }
     }
 }
@@ -67,8 +40,10 @@ public static class Revolver_Shoot_Patch
 {
     static void Prefix()
     {
-        InputSettings.UpdateMode currentMode = InputSystem.settings.updateMode;
-        Plugin.Logger.LogInfo("Input System Update Mode: " + currentMode);
+        Plugin.Logger.LogInfo("Input System Update Mode: " + InputSystem.settings.updateMode);
+        Plugin.Logger.LogInfo("Current Boost value: " + NewMovement.instance.boost);
+        Plugin.Logger.LogInfo("fixedDeltaTime: " + Time.fixedDeltaTime);
+        Plugin.Logger.LogInfo("----");
     }
 }
 
@@ -77,7 +52,18 @@ public static class Nailgun_Shoot_Patch
 {
     static void Prefix()
     {
-        Plugin.Logger.LogInfo("Boost value: " + NewMovement.instance.boost);
+        NewMovement.instance.boostLeft = 10f;
+        Plugin.Logger.LogInfo("Toogled boostLeft to: " + NewMovement.instance.boostLeft);
+    }
+}
+
+[HarmonyPatch(typeof(Railcannon), nameof(Railcannon.Shoot))]
+public static class Railcannon_Shoot_Patch
+{
+    static void Prefix()
+    {
+        Settings.replaceUpdate = true;
+        Plugin.Logger.LogInfo("Toggled replaceFixedUpdate to: " + Settings.replaceFixedUpdate);
     }
 }
 
@@ -91,6 +77,34 @@ public static class RocketLauncher_Shoot_Patch
     }
 }
 
+
+[HarmonyPatch(typeof(NewMovement), nameof(NewMovement.FixedUpdate))]
+public static class NewMovement_FixedUpdate_Patch
+{
+    static void Postfix(NewMovement __instance)
+    {
+        if (Settings.replaceUpdate)
+        {
+            SimulateInput.ReleaseC();
+            Settings.replaceUpdateCount = 1;
+            Settings.replaceUpdate = false;
+        }
+    }
+}
+
+[HarmonyPatch(typeof(NewMovement), nameof(NewMovement.Update))]
+public static class NewMovement_Update_Patch
+{
+    static void Postfix(NewMovement __instance)
+    {
+        if (Settings.replaceUpdateCount > 0)
+        {
+            SimulateInput.PressSpace();
+            Settings.replaceUpdateCount--;
+        }
+    }
+}
+
 public static class Utils
 {
     public static string GetCallStack()
@@ -100,7 +114,7 @@ public static class Utils
         foreach (var frame in trace.GetFrames())
         {
             var method = frame.GetMethod();
-            methodNames += ($"{method.DeclaringType.FullName}.{method.Name} <- ");
+            methodNames += method.DeclaringType.FullName + "." + method.Name + " <- ";
         }
         return methodNames;
     }

@@ -10,18 +10,20 @@
 
 记得去BepInEx.cfg里把logging.console的Enabled设置为true，不然你拿什么看输出呢
 
+boost:滑行状态
+
 ### 大纲：
-#### 三条时间线：
+操作：
+滑铲，松开滑铲，按跳跃
+#### 时间线：
 根据视频与Unity官方文档，当前的输入与帧循环情况如下：
 
 1. **FixedUpdate()**
-   - 大约运行在 **125 FPS** 左右
-   - 时间间隔固定
-   - (事实上这个东西才是我最不太确定的，不过哪怕具体运行帧率有误差只要不是那种一秒运行240次以上就无所谓)
+   - Time.fixedDeltaTime 为 0.008，也就是8ms
+   - 所以运行在125fps (1/0.008)
 
 2. **Update()**
    - 每帧执行一次
-   - 用于处理游戏逻辑、动画、输入读取等
 
 3. **InputSystem**
    - ULTRAKILL的UpdateMode: `ProcessEventsInDynamicUpdate`
@@ -36,6 +38,11 @@
 - Dodge()的后面
 其中 Dodge()只在FixedUpdate()里调用
 #### 假说：
+**触发方式**
+- 在FixedUpdate()之后，一帧松掉滑铲键，一帧按跳跃，且两个操作要在两次FixedUpdate之间完成
+也就是说理想情况下最大容错为8ms，最不理想情况下就是完全搓不出来 (第一帧没问题，但FixedUpdate在第二帧上)
+
+
 **FixedUpdate()**
 - 触发Dodge()，由于sliding为true所以不修改boost的值
 
