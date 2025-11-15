@@ -32,8 +32,19 @@ In this case:
      - SSJ will not trigger because `boost = true`  
      - `Jump()` then sets `boost = false`
 
+<img src="./docs/114514.png"/>
+<p style="text-align:center; font-size:0.9em;">Fig.1：Idealy procedure</p>
+
+<br>
+
 Reference:
 - [Event function execution order](https://docs.unity3d.com/Manual/execution-order.html)
 - [Input System Update Mode](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.16/api/UnityEngine.InputSystem.InputSettings.UpdateMode.html#:~:text=In%20this%20mode%2C%20Update%20%28%29%20must%20be%20called,in%20the%20frame%20explicitly%20at%20an%20exact%20location.)
 - [KeyboardState](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.16/api/UnityEngine.InputSystem.LowLevel.KeyboardState.html)
 - [SSJ Guide](https://www.youtube.com/watch?v=lwkfebp1_RE)
+
+
+#### Thanks
+10_days_till_xmas
+
+Alma

@@ -6,15 +6,13 @@
 大概知道了，update太超模了运行多次没fixedupdate用dodge清理boost值，然后inputSystem检测到跳就直接爆了
 
 ### 项目本身
-一些patch用于检测，一些patch用于debug，但神秘扣体力跳还是要你自己搓
+一些patch用于检测，一些patch用于debug
 
-记得去BepInEx.cfg里把logging.console的Enabled设置为true，不然你拿什么看输出呢
-
-boost:滑行状态
+神秘扣体力跳可以按住滑铲然后射轨道炮来达成，但还是要roll随机
 
 ### 大纲：
 操作：
-滑铲，松开滑铲，按跳跃
+按住滑铲，松开滑铲，按跳跃
 #### 时间线：
 根据视频与Unity官方文档，当前的输入与帧循环情况如下：
 
@@ -56,16 +54,21 @@ frame 2:
     - Update() ：执行了Jump()，由于boost为true触发了冲刺音效和扣体力值
 
 由于SSJ要求boost为false所以触发不了SSJ
+
+
+<img src="./docs/114514.png"/>
+<p style="text-align:center; font-size:0.9em;">Fig.1：理想流程</p>
+
 <br><br><br>
 
 <img src="./docs/branch_cancelSlideInput.png"/>
-<p style="text-align:center; font-size:0.9em;">Fig.1：在Update里的StopSlide分支</p>
+<p style="text-align:center; font-size:0.9em;">Fig.2：在Update里的StopSlide分支</p>
 
 <img src="./docs/function_StopSlide.png"/>
-<p style="text-align:center; font-size:0.9em;">Fig.2：StopSlide函数</p>
+<p style="text-align:center; font-size:0.9em;">Fig.3：StopSlide函数</p>
 
 <img src="./docs/branch_boostEqlTrue.png"/>
-<p style="text-align:center; font-size:0.9em;">Fig.3: boost为true的分支</p>
+<p style="text-align:center; font-size:0.9em;">Fig.4: boost为true的分支</p>
 
 #### 避免方式
 能有这个bug说明你的游戏帧率真的很高
