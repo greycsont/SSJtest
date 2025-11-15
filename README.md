@@ -1,5 +1,8 @@
 [简体中文](README_CN.md)
 
+### About this project
+A mod for SSJ's weird jump with consume stamina
+With this mod, you can do that by hold slide and shoot railcannon and pray to RNG god
 
 ### Introduction
 Normally, the NewMovement.boost will set to false by the `Dodge()` in `FixedUpdate()` if not sliding, but the interval between two Fixedupdate is 8ms (it can be checked by Time.fixedDeltaTime).
