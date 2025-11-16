@@ -27,19 +27,31 @@
    - ULTRAKILL的UpdateMode: `ProcessEventsInDynamicUpdate`
    - DynamicUpdate是每帧执行一次，在 **Update() 之前**处理输入事件
 
-官方文档说明: 
-- [Event function execution order](https://docs.unity3d.com/Manual/execution-order.html)
-- [Input System Update Mode](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.16/api/UnityEngine.InputSystem.InputSettings.UpdateMode.html#:~:text=In%20this%20mode%2C%20Update%20%28%29%20must%20be%20called,in%20the%20frame%20explicitly%20at%20an%20exact%20location.)
 
 此操作唯二可以修改boost变量为false的地方：
 - Jump()的最后面
 - Dodge()的后面
 其中 Dodge()只在FixedUpdate()里调用
+
+<br><br>
+zhong问
+<img src="./docs/branch_dodgeWithoutSliding.png"/>
+<p style="text-align:center; font-size:0.9em;">Fig.1：Dodge()里当sliding为false的分支</p>
+
+<img src="./docs/branch_cancelSlideInput.png"/>
+<p style="text-align:center; font-size:0.9em;">Fig.2：在Update()里的StopSlide分支</p>
+
+<img src="./docs/function_StopSlide.png"/>
+<p style="text-align:center; font-size:0.9em;">Fig.3：StopSlide()函数</p>
+
+<img src="./docs/branch_boostEqlTrue.png"/>
+<p style="text-align:center; font-size:0.9em;">Fig.4: Jump()里boost为true的分支</p>
+
+
 #### 假说：
 **触发方式**
 - 在FixedUpdate()之后，一帧松掉滑铲键，一帧按跳跃，且两个操作要在两次FixedUpdate之间完成
 也就是说理想情况下最大容错为8ms，最不理想情况下就是完全搓不出来 (第一帧没问题，但FixedUpdate在第二帧上)
-
 
 **FixedUpdate()**
 - 触发Dodge()，由于sliding为true所以不修改boost的值
@@ -61,20 +73,18 @@ frame 2:
 
 <br><br><br>
 
-<img src="./docs/branch_cancelSlideInput.png"/>
-<p style="text-align:center; font-size:0.9em;">Fig.2：在Update里的StopSlide分支</p>
-
-<img src="./docs/function_StopSlide.png"/>
-<p style="text-align:center; font-size:0.9em;">Fig.3：StopSlide函数</p>
-
-<img src="./docs/branch_boostEqlTrue.png"/>
-<p style="text-align:center; font-size:0.9em;">Fig.4: boost为true的分支</p>
 
 #### 避免方式
 能有这个bug说明你的游戏帧率真的很高
 
-#### 解决方式 (WIP)
+#### 解决方式
 我怎么知道啊，反正FixedUpdate和Update里必须统一一下哪段放哪段
+
+#### 引用
+- [SSJ Guide by delilah](https://www.youtube.com/watch?v=lwkfebp1_RE)
+- [Event function execution order](https://docs.unity3d.com/Manual/execution-order.html)
+- [Input System Update Mode](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.16/api/UnityEngine.InputSystem.InputSettings.UpdateMode.html#:~:text=In%20this%20mode%2C%20Update%20%28%29%20must%20be%20called,in%20the%20frame%20explicitly%20at%20an%20exact%20location.)
+- [KeyboardState](https://docs.unity3d.com/Packages/com.unity.inputsystem@1.16/api/UnityEngine.InputSystem.LowLevel.KeyboardState.html)
 
 #### 感谢
 10_days_till_xmas
