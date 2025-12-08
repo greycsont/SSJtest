@@ -34,7 +34,6 @@
 其中 Dodge()只在FixedUpdate()里调用
 
 <br><br>
-zhong问
 <img src="./docs/branch_dodgeWithoutSliding.png"/>
 <p style="text-align:center; font-size:0.9em;">Fig.1：Dodge()里当sliding为false的分支</p>
 
